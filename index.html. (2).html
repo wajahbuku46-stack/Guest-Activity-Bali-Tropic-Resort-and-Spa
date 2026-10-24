@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Guest Activity List - Bali Tropic Resort & Spa</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Playfair Display & Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Chart.js for Admin Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- QRCode.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            850: '#064e3b',
+                            900: '#022c22',
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#d97706',
+                            600: '#b45309',
+                        },
+                        sand: {
+                            50: '#fdfbf7',
+                            100: '#f7f4ed',
+                            200: '#ece5d8',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f4ed;
+            color: #1f2937;
+        }
+        .font-serif-title {
+            font-family: 'Playfair Display', serif;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #ece5d8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #059669;
+            border-radius: 4px;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            body {
+                background: #fff !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-emerald-600 selection:text-white">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-emerald-900 text-white shadow-lg border-b border-gold-500/30 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Resort Logo & Name -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('guest')">
+                    <div class="w-12 h-12 rounded-full bg-gold-500 flex items-center justify-center text-emerald-900 font-bold text-2xl shadow-inner">
+                        <i class="fa-solid fa-palmtree"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-serif-title text-xl sm:text-2xl font-bold tracking-wide text-gold-400">BALI TROPIC</h1>
+                        <p class="text-xs text-emerald-200 tracking-widest uppercase font-light">Resort & Spa • Activity Hub</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <button id="btn-guest-view" onclick="switchTab('guest')" class="px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2 bg-emerald-800 text-gold-400 border border-gold-500/30">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span class="hidden sm:inline">Guest Activities</span>
+                    </button>
+                    
+                    <button id="btn-admin-view" onclick="toggleAdminAuth()" class="px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2 bg-emerald-950 text-emerald-300 hover:text-white hover:bg-emerald-800 border border-emerald-700">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span class="hidden sm:inline">Management Admin</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- GUEST VIEW -->
+        <section id="guest-section" class="space-y-8">
+            <!-- Hero Banner -->
+            <div class="relative rounded-2xl overflow-hidden shadow-2xl bg-emerald-900 text-white min-h-[220px] sm:min-h-[280px] flex items-center justify-center p-6 text-center">
+                <div class="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay" style="background-image: url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80');"></div>
+                <div class="relative z-10 max-w-3xl space-y-3">
+                    <span class="inline-block px-3 py-1 bg-gold-500/20 text-gold-400 border border-gold-500/40 rounded-full text-xs font-semibold tracking-wider uppercase">Welcome Dear Guests</span>
+                    <h2 class="font-serif-title text-3xl sm:text-5xl font-bold text-white tracking-wide">Daily Guest Activity List</h2>
+                    <p class="text-sm sm:text-base text-emerald-100 font-light max-w-2xl mx-auto">
+                        Enhance your tropical getaway! Discover our daily schedule of cultural crafts, aquatic adventures, and relaxing ocean pursuits.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-sand-200 space-y-4">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+                        <span class="text-xs font-semibold uppercase text-gray-500 whitespace-nowrap mr-1"><i class="fa-solid fa-filter mr-1"></i> Day:</span>
+                        <div id="day-filter-container" class="flex space-x-1.5"></div>
+                    </div>
+
+                    <div class="flex items-center justify-end space-x-2 min-w-max">
+                        <label for="category-filter" class="text-xs font-semibold uppercase text-gray-500 whitespace-nowrap"><i class="fa-solid fa-tag mr-1"></i> Category:</label>
+                        <select id="category-filter" onchange="filterActivities()" class="bg-sand-50 border border-sand-200 text-gray-800 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 p-2.5 outline-none">
+                            <option value="All">All Categories</option>
+                            <option value="Free">Free Activities</option>
+                            <option value="Paid">Paid / Extra Charges</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400"></i>
+                    <input type="text" id="search-input" onkeyup="filterActivities()" placeholder="Search activities by name or location (e.g., Aquacise, Pool, Beach)..." class="w-full pl-10 pr-4 py-2 bg-sand-50 border border-sand-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 transition">
+                </div>
+            </div>
+
+            <!-- Activity Cards Grid -->
+            <div id="activities-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+            <!-- Empty State -->
+            <div id="no-activities" class="hidden text-center py-12 bg-white rounded-2xl border border-sand-200">
+                <i class="fa-solid fa-calendar-xmark text-4xl text-gray-300 mb-3"></i>
+                <h3 class="text-lg font-semibold text-gray-700">No Activities Found</h3>
+                <p class="text-sm text-gray-500">Try adjusting your filters or search term.</p>
+            </div>
+        </section>
+
+        <!-- ADMIN DASHBOARD -->
+        <section id="admin-section" class="hidden space-y-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-emerald-900 text-white p-6 rounded-2xl shadow-xl">
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2.5 py-0.5 bg-gold-500/20 text-gold-400 text-xs font-bold rounded border border-gold-500/30">MANAGEMENT PORTAL</span>
+                        <span class="text-xs text-emerald-300">• Live Tracking</span>
+                    </div>
+                    <h2 class="font-serif-title text-2xl sm:text-3xl font-bold mt-1">Activity Analytics & Bookings</h2>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <button onclick="openPhotoManagerModal()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-medium px-4 py-2.5 rounded-xl text-sm transition flex items-center space-x-2">
+                        <i class="fa-solid fa-camera"></i>
+                        <span>Manage Photos</span>
+                    </button>
+                    <button onclick="openQRModal()" class="bg-gold-500 hover:bg-gold-600 text-emerald-950 font-semibold px-4 py-2.5 rounded-xl shadow text-sm transition flex items-center space-x-2">
+                        <i class="fa-solid fa-qrcode"></i>
+                        <span>Generate Poster QR</span>
+                    </button>
+                    <button onclick="exportBookingsCSV()" class="bg-emerald-800 hover:bg-emerald-700 text-white font-medium px-4 py-2.5 rounded-xl text-sm transition flex items-center space-x-2">
+                        <i class="fa-solid fa-file-csv"></i>
+                        <span>Export CSV</span>
+                    </button>
+                    <button onclick="switchTab('guest')" class="bg-emerald-950 hover:bg-emerald-800 text-emerald-300 font-medium px-4 py-2.5 rounded-xl text-sm transition">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Exit Admin
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Overview Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="bg-white p-5 rounded-2xl border border-sand-200 shadow-sm flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-calendar-day"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-500 uppercase">Bookings Today</p>
+                        <h3 id="stat-today" class="text-2xl font-bold text-gray-900">0</h3>
+                        <p id="stat-today-pax" class="text-xs text-emerald-600 mt-0.5">0 total guests</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-sand-200 shadow-sm flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-calendar-week"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-500 uppercase">This Month</p>
+                        <h3 id="stat-month-pax" class="text-2xl font-bold text-gray-900">0 Pax</h3>
+                        <p class="text-xs text-blue-600 mt-0.5">Calculated total</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-sand-200 shadow-sm flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-500 uppercase">This Year</p>
+                        <h3 id="stat-year-pax" class="text-2xl font-bold text-gray-900">0 Pax</h3>
+                        <p class="text-xs text-amber-600 mt-0.5">Annual calculation</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border border-sand-200 shadow-sm flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-500 uppercase">Top Activity</p>
+                        <h3 id="stat-popular" class="text-base font-bold text-gray-900 truncate max-w-[140px]">-</h3>
+                        <p id="stat-popular-count" class="text-xs text-purple-600 mt-0.5">0 bookings</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Visual Breakdown -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-sand-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-gray-800 font-serif-title">Monthly Guest Attendance Trend</h3>
+                        <span class="text-xs text-gray-400">Current Year Overview</span>
+                    </div>
+                    <div class="relative h-64 w-full">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-sand-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800 font-serif-title mb-4">Activity Popularity (Pax)</h3>
+                        <div id="activity-breakdown-list" class="space-y-3 max-h-60 overflow-y-auto pr-1"></div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-500 flex justify-between">
+                        <span>Auto-synchronized</span>
+                        <span class="font-medium text-emerald-700">Live Data</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guest Bookings Table -->
+            <div class="bg-white rounded-2xl border border-sand-200 shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-sand-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800 font-serif-title">Recent Guest Registrations</h3>
+                        <p class="text-xs text-gray-500">List of all upcoming and past activity sign-ups</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <select id="admin-date-filter" onchange="renderAdminDashboard()" class="bg-sand-50 border border-sand-200 text-gray-700 text-xs rounded-lg p-2 focus:ring-emerald-500 outline-none">
+                            <option value="ALL">All Time</option>
+                            <option value="TODAY">Today</option>
+                            <option value="MONTH">This Month</option>
+                            <option value="YEAR">This Year</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-sand-100 text-xs text-gray-600 uppercase font-semibold">
+                            <tr>
+                                <th class="p-4">Date</th>
+                                <th class="p-4">Guest Details</th>
+                                <th class="p-4">Room</th>
+                                <th class="p-4">Activity</th>
+                                <th class="p-4 text-center">Pax</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookings-table-body" class="divide-y divide-sand-200"></tbody>
+                    </table>
+                </div>
+                <div id="no-bookings-msg" class="hidden text-center py-8 text-gray-400 text-sm">
+                    No bookings recorded yet for this criteria.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-emerald-950 text-emerald-400 border-t border-emerald-900 mt-12 py-8 no-print">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-3">
+            <div class="flex justify-center items-center space-x-2 text-gold-400">
+                <i class="fa-solid fa-crown text-sm"></i>
+                <span class="font-serif-title text-base font-semibold tracking-wider">BALI TROPIC RESORT & SPA</span>
+            </div>
+            <p class="text-xs text-emerald-300/70 max-w-md mx-auto">
+                Jl. Pratama, Tanjung Benoa, No. 34A, Nusa Dua, Bali - Indonesia. Designed for smooth guest interactions & management analytics.
+            </p>
+            <p class="text-[11px] text-emerald-500">
+                &copy; <span id="year-span"></span> www.balitropic-resort.com | phone : 0361 772130. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- MODALS -->
+
+    <!-- Booking Modal -->
+    <div id="booking-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl transform transition-all border border-sand-200">
+            <div class="bg-emerald-900 text-white p-5 flex items-center justify-between">
+                <div>
+                    <span class="text-xs text-gold-400 uppercase tracking-wider font-semibold">Activity Join Form</span>
+                    <h3 id="modal-activity-title" class="font-serif-title text-xl font-bold">Activity Name</h3>
+                </div>
+                <button onclick="closeBookingModal()" class="text-emerald-200 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="booking-form" onsubmit="handleBookingSubmit(event)" class="p-6 space-y-4">
+                <input type="hidden" id="modal-activity-id">
+
+                <div class="bg-sand-100 p-3.5 rounded-xl border border-sand-200 text-xs space-y-1">
+                    <div class="flex justify-between">
+                        <span class="text-gray-500"><i class="fa-solid fa-clock text-emerald-700 mr-1"></i> Time:</span>
+                        <span id="modal-activity-time" class="font-semibold text-gray-800">10:30 AM</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500"><i class="fa-solid fa-location-dot text-emerald-700 mr-1"></i> Location:</span>
+                        <span id="modal-activity-location" class="font-semibold text-gray-800">Main Pool</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500"><i class="fa-solid fa-tag text-emerald-700 mr-1"></i> Category:</span>
+                        <span id="modal-activity-category" class="font-semibold text-emerald-700">Free</span>
+                    </div>
+                </div>
+
+                <div id="session-selection-container" class="hidden space-y-1">
+                    <label class="block text-xs font-semibold text-gray-700">Select Activity Session *</label>
+                    <select id="book-session" onchange="updateSessionCapacityCheck()" class="w-full bg-sand-50 border border-sand-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-600 outline-none"></select>
+                    <div id="session-capacity-msg" class="hidden"></div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Date of Activity *</label>
+                        <input type="date" id="book-date" onchange="updateSessionCapacityCheck()" required class="w-full bg-sand-50 border border-sand-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-600 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Room Number *</label>
+                        <input type="text" id="book-room" placeholder="e.g., 204" required class="w-full bg-sand-50 border border-sand-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-600 outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Lead Guest Name *</label>
+                    <input type="text" id="book-name" placeholder="Mr. / Ms. Full Name" required class="w-full bg-sand-50 border border-sand-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-600 outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Number of Guests (Pax) *</label>
+                        <input type="number" id="book-pax" min="1" max="10" value="1" required class="w-full bg-sand-50 border border-sand-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-600 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Meal Package</label>
+                        <select id="book-package" class="w-full bg-sand-50 border border-sand-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-600 outline-none">
+                            <option value="Non All-Inclusive">Standard Guest</option>
+                            <option value="All-Inclusive">All-Inclusive Guest</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Special Requests / Notes (Optional)</label>
+                    <textarea id="book-notes" rows="2" placeholder="e.g. Needs life jacket, beginner level..." class="w-full bg-sand-50 border border-sand-200 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-600 outline-none resize-none"></textarea>
+                </div>
+
+                <div class="pt-2 flex justify-end space-x-3">
+                    <button type="button" onclick="closeBookingModal()" class="px-4 py-2.5 rounded-xl border border-gray-300 text-gray-600 text-sm font-medium hover:bg-gray-50">Cancel</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white text-sm font-semibold shadow-md transition flex items-center space-x-2">
+                        <i class="fa-solid fa-check"></i>
+                        <span>Confirm Registration</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Booking Confirmation Receipt Modal -->
+    <div id="receipt-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl p-6 space-y-5 text-center border border-sand-200">
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div>
+                <span class="text-xs uppercase text-emerald-700 font-bold tracking-widest">Joined Successfully!</span>
+                <h3 class="font-serif-title text-2xl font-bold text-gray-800 mt-1">Booking Confirmation</h3>
+                <p class="text-xs text-gray-500 mt-1">We look forward to hosting you in this activity!</p>
+            </div>
+
+            <div id="receipt-content" class="bg-sand-50 p-4 rounded-xl border border-sand-200 text-left text-xs space-y-2"></div>
+
+            <p class="text-[11px] text-gray-400">Please present your room number to the activity coordinator at the designated location.</p>
+
+            <button onclick="closeReceiptModal()" class="w-full py-3 bg-emerald-900 hover:bg-emerald-800 text-white rounded-xl font-semibold text-sm transition shadow">
+                Done & Back to Activities
+            </button>
+        </div>
+    </div>
+
+    <!-- Admin PIN Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 z-50 hidden bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xs w-full p-6 space-y-4 shadow-2xl text-center border border-sand-200">
+            <div class="w-12 h-12 bg-gold-100 text-gold-600 rounded-full flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <div>
+                <h3 class="font-serif-title text-xl font-bold text-gray-800">Management Access</h3>
+                <p class="text-xs text-gray-500 mt-1">Enter Admin Security PIN (Default: 1234)</p>
+            </div>
+
+            <form onsubmit="verifyAdminPIN(event)" class="space-y-3">
+                <input type="password" id="admin-pin" placeholder="Enter PIN" maxlength="6" required autofocus class="w-full text-center text-xl tracking-widest bg-sand-50 border border-sand-200 rounded-xl p-2.5 focus:ring-2 focus:ring-emerald-600 outline-none">
+                <p id="pin-error" class="hidden text-xs text-red-500 font-medium">Incorrect PIN. Try again.</p>
+                <div class="flex space-x-2">
+                    <button type="button" onclick="closeAuthModal()" class="w-1/2 py-2 rounded-xl border border-gray-300 text-gray-600 text-xs font-medium">Cancel</button>
+                    <button type="submit" class="w-1/2 py-2 rounded-xl bg-emerald-900 text-white text-xs font-semibold">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- QR Code Generator & Poster Modal -->
+    <div id="qr-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-xl w-full overflow-hidden shadow-2xl my-8">
+            <div class="bg-emerald-900 text-white p-4 flex items-center justify-between no-print">
+                <h3 class="font-serif-title text-lg font-bold">Resort Activity QR Code Poster</h3>
+                <button onclick="closeQRModal()" class="text-emerald-200 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-6">
+                <div class="no-print space-y-2">
+                    <label class="block text-xs font-semibold text-gray-700">Target Web URL for QR Code:</label>
+                    <div class="flex space-x-2">
+                        <input type="text" id="qr-url-input" class="flex-grow bg-sand-50 border border-sand-200 rounded-xl p-2.5 text-xs focus:ring-2 focus:ring-emerald-600 outline-none">
+                        <button onclick="generateQRCode()" class="bg-emerald-800 text-white text-xs px-4 rounded-xl font-semibold hover:bg-emerald-900">Update</button>
+                    </div>
+                </div>
+
+                <div id="printable-poster" class="bg-sand-50 border-4 border-gold-500 p-8 rounded-2xl text-center space-y-6 shadow-inner relative">
+                    <div class="space-y-1">
+                        <div class="w-12 h-12 bg-emerald-900 text-gold-400 rounded-full flex items-center justify-center mx-auto text-xl shadow">
+                            <i class="fa-solid fa-palmtree"></i>
+                        </div>
+                        <h2 class="font-serif-title text-2xl font-bold text-emerald-900 tracking-wider">BALI TROPIC RESORT & SPA</h2>
+                        <p class="text-xs text-gold-600 tracking-widest uppercase font-semibold">DAILY GUEST ACTIVITIES</p>
+                    </div>
+
+                    <div class="my-4 flex flex-col items-center justify-center">
+                        <div id="qrcode-box" class="p-4 bg-white rounded-2xl shadow-md border border-sand-200"></div>
+                        <p class="text-xs font-medium text-gray-500 mt-3"><i class="fa-solid fa-camera mr-1"></i> Point your smartphone camera to scan & view full activity schedule</p>
+                    </div>
+
+                    <div class="border-t border-sand-200 pt-4 space-y-1">
+                        <p class="text-sm font-semibold text-emerald-900">Join Free Crafts, Aquacise, Lessons & Tours</p>
+                        <p class="text-xs text-gray-500">Instant registration from your mobile phone!</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-3 no-print">
+                    <button onclick="closeQRModal()" class="px-4 py-2 rounded-xl border border-gray-300 text-gray-600 text-xs font-medium">Close</button>
+                    <button onclick="window.print()" class="px-5 py-2 rounded-xl bg-gold-500 hover:bg-gold-600 text-emerald-950 font-bold text-xs shadow flex items-center space-x-2">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Print QR Poster</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Manager Modal -->
+    <div id="photo-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl my-8 border border-sand-200">
+            <div class="bg-emerald-900 text-white p-5 flex items-center justify-between">
+                <div>
+                    <span class="text-xs text-gold-400 uppercase tracking-wider font-semibold">Resort Customization</span>
+                    <h3 class="font-serif-title text-xl font-bold">Activity Image Manager</h3>
+                </div>
+                <button onclick="closePhotoManagerModal()" class="text-emerald-200 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <p class="text-xs text-gray-600 bg-sand-100 p-3 rounded-xl border border-sand-200">
+                    <i class="fa-solid fa-circle-info text-emerald-700 mr-1"></i>
+                    Paste direct image URLs or Google Drive share links to update displayed photos.
+                </p>
+
+                <div id="photo-manager-list" class="space-y-4 max-h-[60vh] overflow-y-auto pr-2"></div>
+
+                <div class="pt-4 border-t border-sand-200 flex justify-between items-center">
+                    <button onclick="resetPhotosToDefault()" class="text-xs text-red-600 hover:text-red-800 font-medium underline">
+                        Reset All to Default Photos
+                    </button>
+                    <div class="flex space-x-2">
+                        <button onclick="closePhotoManagerModal()" class="px-4 py-2 rounded-xl border border-gray-300 text-gray-600 text-xs font-medium">Cancel</button>
+                        <button onclick="savePhotoChanges()" class="px-5 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs shadow flex items-center space-x-2">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span>Save Photo Changes</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- APPLICATION SCRIPT -->
+    <script>
+        const RAW_ACTIVITIES = [
+            {
+                id: 1,
+                activity: "Aquacise",
+                category: "Free",
+                day: "Everyday",
+                time: "10.30 am to 11.15 am",
+                location: "Main swimming pool",
+                description: "A fun, low-impact water aerobics workout using pool resistance to tone muscles and boost energy.",
+                image: "https://drive.google.com/file/d/1XonoIvDHhizD0hM7kIoiMFeZjUheReV1/view?usp=drivesdk"
+            },
+            {
+                id: 2,
+                activity: "Snorkeling Trip",
+                category: "250K++/pax for non all in guest",
+                day: "Monday & Friday",
+                time: "Session 1: 11.30 am to 12.30 pm | Session 2: 12.30 pm to 1.30 pm",
+                location: "Around Nusa Dua Ocean",
+                description: "Explore vibrant marine life and stunning coral reefs on an exciting underwater ocean adventure. Max 6 guests per session.",
+                image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80",
+                hasSessions: true,
+                maxPaxPerSession: 6,
+                sessions: [
+                    { id: "S1", label: "Session 1: 11:30 AM - 12:30 PM", time: "11:30 AM - 12:30 PM" },
+                    { id: "S2", label: "Session 2: 12:30 PM - 01:30 PM", time: "12:30 PM - 01:30 PM" }
+                ]
+            },
+            {
+                id: 3,
+                activity: "Windsurf Lesson",
+                category: "150K++/pax for non all in guest",
+                day: "Sunday & Tuesday",
+                time: "11.30 am to 12.30 pm",
+                location: "Bali Tropic Beach",
+                description: "Master the basics of windsurfing and ride the coastal breeze with expert step-by-step guidance.",
+                image: "https://drive.google.com/file/d/1hxPzN8W0qH8knwyijC2EQ-vBiBKfIegB/view?usp=drivesdk"
+            },
+            {
+                id: 4,
+                activity: "Cooking Demonstration",
+                category: "Free",
+                day: "Wednesday",
+                time: "11.30 am to 12.30 pm",
+                location: "Rajapala Open Stage",
+                description: "Learn secret recipes and techniques for iconic local dishes in a live, interactive culinary session.",
+                image: "https://drive.google.com/file/d/1CBh2aAC-_fQN4HVQdB1cpbzo7V_gPRpL/view?usp=drivesdk"
+            },
+            {
+                id: 5,
+                activity: "Enggrang Lesson",
+                category: "Free",
+                day: "Thursday",
+                time: "11.30 am to 12.30 pm",
+                location: "Rajapala Open Stage Garden",
+                description: "Challenge your balance and try Eggrang, a fun traditional Indonesian bamboo stilt-walking game.",
+                image: "https://drive.google.com/file/d/1g2WSOjvNzYRqXdOrZgiO163tubxGGiHl/view?usp=drivesdk"
+            },
+            {
+                id: 6,
+                activity: "Diving Lesson",
+                category: "Free",
+                day: "Saturday",
+                time: "11.30 am to 12.30 pm",
+                location: "Main swimming pool",
+                description: "Learn fundamental scuba diving techniques and safety tips in a controlled, beginner-friendly pool setup.",
+                image: "https://drive.google.com/file/d/13lMnC58OsmncW43HNczo5ybZt60ask30/view?usp=drivesdk"
+            },
+            {
+                id: 7,
+                activity: "Canang Lesson",
+                category: "Free",
+                day: "Monday",
+                time: "3.00 pm to 4.00 pm",
+                location: "Rajapala Open Stage",
+                description: "Craft traditional Balinese palm-leaf offering baskets (Canang Sari) while discovering local cultural customs.",
+                image: "https://drive.google.com/file/d/1F2XzIh4O-lYOeBPQcLoBA4FYBMz2zZMB/view?usp=drivesdk"
+            },
+            {
+                id: 8,
+                activity: "Fruit Carving",
+                category: "Free",
+                day: "Tuesday",
+                time: "3.00 pm to 4.00 pm",
+                location: "Rajapala Open Stage",
+                description: "Discover the intricate art of transforming fresh tropical fruits into beautiful decorative edible displays.",
+                image: "https://drive.google.com/file/d/1RIJHhPhcP391tCyyxEv8rI3TMdkvD2uw/view?usp=drivesdk"
+            },
+            {
+                id: 9,
+                activity: "Dart Competition",
+                category: "Free",
+                day: "Wednesday",
+                time: "3.00 pm to 4.00 pm",
+                location: "Rajapala Open Stage",
+                description: "Test your aim and join fellow guests in a fun, friendly target-throwing challenge.",
+                image: "https://drive.google.com/file/d/1cAc-VwJ-JNS82dXrDfpMYPFQ4VtW5rpR/view?usp=drivesdk"
+            },
+            {
+                id: 10,
+                activity: "Balinese Music Lesson",
+                category: "Free",
+                day: "Thursday",
+                time: "3.00 pm to 4.00 pm",
+                location: "Front Of Bali Tropic Temple",
+                description: "Experience authentic island rhythms by learning to play traditional Balinese gamelan instruments.",
+                image: "https://drive.google.com/file/d/1A_KwL-CLseW7Dii4rWMvfYr23SogASVv/view?usp=drivesdk"
+            },
+            {
+                id: 11,
+                activity: "Painting Lesson",
+                category: "Free",
+                day: "Friday",
+                time: "3.00 pm to 4.00 pm",
+                location: "Rajapala Open Stage",
+                description: "Unleash your artistic creativity as you learn basic painting techniques inspired by Balinese culture.",
+                image: "https://drive.google.com/file/d/1PmI-Xil7qFIYf1bvtYRX2J0UiAsNqzfy/view?usp=drivesdk"
+            },
+            {
+                id: 12,
+                activity: "Balinese Dance Lesson",
+                category: "Free",
+                day: "Saturday",
+                time: "3.00 pm to 4.00 pm",
+                location: "Rajapala Open Stage",
+                description: "Learn graceful hand gestures and iconic movements of traditional Balinese cultural dance.",
+                image: "https://drive.google.com/file/d/1vE49nZ-qSxfjNGJedwbXfGtLbKLPHbRA/view?usp=drivesdk"
+            },
+            {
+                id: 13,
+                activity: "Fruit Testing",
+                category: "Free",
+                day: "Sunday",
+                time: "3.00 pm to 4.00 pm",
+                location: "Rajapala Open Stage",
+                description: "Sample an exotic selection of fresh, seasonal tropical fruits native to Bali and Indonesia.",
+                image: "https://drive.google.com/file/d/1j14WnaTiDHSq-b3oSbRF7K7jd8wrJjEq/view?usp=drivesdk"
+            },
+            {
+                id: 14,
+                activity: "Volleyball",
+                category: "Free",
+                day: "Everyday",
+                time: "4.00 pm to 5.30 pm",
+                location: "Bali Tropic Beach Volleyball Court",
+                description: "Gather for an energetic, casual game of beach volleyball by the ocean during sunset hours.",
+                image: "https://drive.google.com/file/d/18vAasUq6ci9ClQBMJX7lh6SCxT4YKs3i/view?usp=drivesdk"
+            }
+        ];
+
+        // Format Google Drive Link to Direct Image Link with multiple fallback formats
+        function formatImageUrl(url) {
+            if (!url) return 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80';
+            url = url.trim();
+            
+            // Extract Google Drive ID if user pasted Google Drive Link
+            if (url.includes('drive.google.com') || url.includes('docs.google.com')) {
+                let match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+                if (match && match[1]) {
+                    return `https://lh3.googleusercontent.com/d/${match[1]}=w1000`;
+                }
+            }
+            return url;
+        }
+
+        let selectedDayFilter = 'All';
+        let bookings = [];
+        let chartInstance = null;
+        const DAYS_LIST = ['All', 'Everyday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+        window.onload = function() {
+            document.getElementById('year-span').innerText = new Date().getFullYear();
+            initStorage();
+            loadCustomPhotos();
+            renderDayFilters();
+            filterActivities();
+
+            const todayStr = new Date().toISOString().split('T')[0];
+            const bookDateElem = document.getElementById('book-date');
+            if (bookDateElem) bookDateElem.value = todayStr;
+        };
+
+        function loadCustomPhotos() {
+            const savedPhotos = localStorage.getItem('bt_custom_photos');
+            if (savedPhotos) {
+                try {
+                    const photoMap = JSON.parse(savedPhotos);
+                    RAW_ACTIVITIES.forEach(act => {
+                        if (photoMap[act.id]) act.image = photoMap[act.id];
+                    });
+                } catch (e) {
+                    console.error("Error loading saved photos:", e);
+                }
+            }
+        }
+
+        function openPhotoManagerModal() {
+            const listContainer = document.getElementById('photo-manager-list');
+            listContainer.innerHTML = RAW_ACTIVITIES.map(act => `
+                <div class="p-3 bg-sand-50 rounded-xl border border-sand-200 flex flex-col sm:flex-row items-center gap-4">
+                    <img src="${formatImageUrl(act.image)}" alt="${act.activity}" class="w-16 h-16 object-cover rounded-lg border border-sand-300 flex-shrink-0" onerror="this.src='https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=200&q=80'">
+                    <div class="flex-grow space-y-1 w-full">
+                        <div class="flex justify-between">
+                            <span class="text-xs font-bold text-gray-800">${act.activity}</span>
+                            <span class="text-[10px] font-medium text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">${act.day}</span>
+                        </div>
+                        <input type="url" id="photo-input-${act.id}" value="${act.image}" placeholder="Paste Image URL or Google Drive Share Link..." class="w-full bg-white border border-sand-200 text-xs rounded-lg p-2 focus:ring-2 focus:ring-emerald-600 outline-none">
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('photo-modal').classList.remove('hidden');
+        }
+
+        function closePhotoManagerModal() {
+            document.getElementById('photo-modal').classList.add('hidden');
+        }
+
+        function savePhotoChanges() {
+            const photoMap = {};
+            RAW_ACTIVITIES.forEach(act => {
+                const input = document.getElementById(`photo-input-${act.id}`);
+                if (input && input.value.trim() !== '') {
+                    act.image = input.value.trim();
+                    photoMap[act.id] = act.image;
+                }
+            });
+
+            localStorage.setItem('bt_custom_photos', JSON.stringify(photoMap));
+            filterActivities();
+            closePhotoManagerModal();
+            alert('Photos updated successfully!');
+        }
+
+        function resetPhotosToDefault() {
+            if (confirm('Are you sure you want to reset all photos to default?')) {
+                localStorage.removeItem('bt_custom_photos');
+                location.reload();
+            }
+        }
+
+        function initStorage() {
+            const savedBookings = localStorage.getItem('bt_activity_bookings');
+            if (savedBookings) {
+                bookings = JSON.parse(savedBookings);
+            } else {
+                bookings = [
+                    {
+                        id: 'BK-' + Date.now() + '-1',
+                        activityId: 1,
+                        activityName: 'Aquacise',
+                        date: new Date().toISOString().split('T')[0],
+                        room: '102',
+                        name: 'Hans Müller',
+                        pax: 2,
+                        package: 'All-Inclusive',
+                        notes: 'Loves water aerobics',
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 'BK-' + Date.now() + '-2',
+                        activityId: 2,
+                        activityName: 'Snorkeling Trip',
+                        sessionId: 'S1',
+                        sessionLabel: 'Session 1: 11:30 AM - 12:30 PM',
+                        date: new Date().toISOString().split('T')[0],
+                        room: '305',
+                        name: 'Sophie Dubois',
+                        pax: 3,
+                        package: 'Non All-Inclusive',
+                        notes: 'Requires medium size fins',
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                saveBookings();
+            }
+        }
+
+        function saveBookings() {
+            localStorage.setItem('bt_activity_bookings', JSON.stringify(bookings));
+        }
+
+        function renderDayFilters() {
+            const container = document.getElementById('day-filter-container');
+            container.innerHTML = DAYS_LIST.map(day => `
+                <button onclick="setDayFilter('${day}')" class="px-3 py-1.5 rounded-lg text-xs font-medium transition whitespace-nowrap ${selectedDayFilter === day ? 'bg-emerald-800 text-gold-400 font-bold shadow' : 'bg-sand-100 text-gray-700 hover:bg-sand-200'}">
+                    ${day}
+                </button>
+            `).join('');
+        }
+
+        function setDayFilter(day) {
+            selectedDayFilter = day;
+            renderDayFilters();
+            filterActivities();
+        }
+
+        function getBookedPax(activityId, dateStr, sessionId = null) {
+            return bookings
+                .filter(b => b.activityId === activityId && b.date === dateStr && (sessionId ? b.sessionId === sessionId : true))
+                .reduce((sum, b) => sum + b.pax, 0);
+        }
+
+        function filterActivities() {
+            const grid = document.getElementById('activities-grid');
+            const noRes = document.getElementById('no-activities');
+            const categoryValue = document.getElementById('category-filter').value;
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            let filtered = RAW_ACTIVITIES.filter(act => {
+                let matchesDay = selectedDayFilter === 'All' || act.day === 'Everyday' || act.day.includes(selectedDayFilter);
+                let matchesCategory = categoryValue === 'All' || 
+                    (categoryValue === 'Free' && act.category.toLowerCase().includes('free')) ||
+                    (categoryValue === 'Paid' && !act.category.toLowerCase().includes('free'));
+                let matchesSearch = act.activity.toLowerCase().includes(searchVal) || 
+                                  act.location.toLowerCase().includes(searchVal) ||
+                                  act.description.toLowerCase().includes(searchVal);
+
+                return matchesDay && matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                noRes.classList.remove('hidden');
+                return;
+            }
+
+            noRes.classList.add('hidden');
+            grid.innerHTML = filtered.map(act => {
+                const isFree = act.category.toLowerCase().includes('free');
+                const badgeColor = isFree ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-amber-100 text-amber-900 border-amber-300';
+                const displayImage = formatImageUrl(act.image);
+
+                let sessionBadgeHTML = '';
+                if (act.hasSessions) {
+                    const s1Pax = getBookedPax(act.id, todayStr, 'S1');
+                    const s2Pax = getBookedPax(act.id, todayStr, 'S2');
+                    const s1Remaining = Math.max(0, act.maxPaxPerSession - s1Pax);
+                    const s2Remaining = Math.max(0, act.maxPaxPerSession - s2Pax);
+
+                    sessionBadgeHTML = `
+                        <div class="mt-2 p-2 bg-sand-50 rounded-lg border border-sand-200 text-[11px] space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600 font-medium">Session 1 (11:30 - 12:30):</span>
+                                ${s1Remaining > 0 
+                                    ? `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-semibold">${s1Remaining}/6 spots left</span>` 
+                                    : `<span class="px-2 py-0.5 bg-red-100 text-red-700 rounded font-bold">FULL</span>`}
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600 font-medium">Session 2 (12:30 - 01:30):</span>
+                                ${s2Remaining > 0 
+                                    ? `<span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-semibold">${s2Remaining}/6 spots left</span>` 
+                                    : `<span class="px-2 py-0.5 bg-red-100 text-red-700 rounded font-bold">FULL</span>`}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="bg-white rounded-2xl overflow-hidden border border-sand-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+                        <div>
+                            <div class="relative h-44 overflow-hidden bg-sand-200">
+                                <img src="${displayImage}" alt="${act.activity}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=600&q=80';">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                                <span class="absolute top-3 left-3 text-[11px] font-bold px-2.5 py-1 rounded-full border shadow-sm ${badgeColor}">
+                                    ${act.category}
+                                </span>
+                                <div class="absolute bottom-3 left-3 right-3 text-white">
+                                    <h3 class="font-serif-title text-xl font-bold tracking-wide">${act.activity}</h3>
+                                </div>
+                            </div>
+
+                            <div class="p-5 space-y-3">
+                                <p class="text-xs text-gray-600 line-clamp-2 leading-relaxed">${act.description}</p>
+                                <div class="space-y-1.5 text-xs text-gray-700 pt-2 border-t border-sand-100">
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fa-solid fa-calendar-day w-4 text-emerald-700"></i>
+                                        <span class="font-medium">${act.day}</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fa-solid fa-clock w-4 text-emerald-700"></i>
+                                        <span>${act.time}</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <i class="fa-solid fa-location-dot w-4 text-emerald-700"></i>
+                                        <span class="truncate">${act.location}</span>
+                                    </div>
+                                </div>
+                                ${sessionBadgeHTML}
+                            </div>
+                        </div>
+
+                        <div class="p-5 pt-0">
+                            <button onclick="openBookingModal(${act.id})" class="w-full py-2.5 bg-emerald-900 hover:bg-emerald-800 text-white font-semibold text-xs rounded-xl shadow transition duration-200 flex items-center justify-center space-x-2 group-hover:bg-gold-500 group-hover:text-emerald-950">
+                                <i class="fa-solid fa-calendar-check"></i>
+                                <span>Join Activity</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openBookingModal(actId) {
+            const act = RAW_ACTIVITIES.find(a => a.id === actId);
+            if (!act) return;
+
+            document.getElementById('modal-activity-id').value = act.id;
+            document.getElementById('modal-activity-title').innerText = act.activity;
+            document.getElementById('modal-activity-time').innerText = act.time;
+            document.getElementById('modal-activity-location').innerText = act.location;
+            document.getElementById('modal-activity-category').innerText = act.category;
+
+            const sessionContainer = document.getElementById('session-selection-container');
+            const sessionSelect = document.getElementById('book-session');
+
+            if (sessionContainer && sessionSelect) {
+                if (act.hasSessions) {
+                    sessionContainer.classList.remove('hidden');
+                    sessionSelect.innerHTML = act.sessions.map(s => `<option value="${s.id}">${s.label}</option>`).join('');
+                    sessionSelect.required = true;
+                } else {
+                    sessionContainer.classList.add('hidden');
+                    sessionSelect.required = false;
+                    sessionSelect.innerHTML = '';
+                }
+            }
+
+            updateSessionCapacityCheck();
+            document.getElementById('booking-modal').classList.remove('hidden');
+        }
+
+        function updateSessionCapacityCheck() {
+            const actIdInput = document.getElementById('modal-activity-id');
+            if (!actIdInput || !actIdInput.value) return;
+
+            const actId = parseInt(actIdInput.value);
+            const act = RAW_ACTIVITIES.find(a => a.id === actId);
+            const bookDateElem = document.getElementById('book-date');
+            const bookDate = bookDateElem ? bookDateElem.value : null;
+            const sessionSelect = document.getElementById('book-session');
+            const paxInput = document.getElementById('book-pax');
+            const capacityMsg = document.getElementById('session-capacity-msg');
+
+            if (!act || !act.hasSessions || !bookDate || !sessionSelect) {
+                if (capacityMsg) capacityMsg.classList.add('hidden');
+                if (paxInput) paxInput.max = 10;
+                return;
+            }
+
+            const selectedSessionId = sessionSelect.value;
+            const bookedPax = getBookedPax(actId, bookDate, selectedSessionId);
+            const maxPax = act.maxPaxPerSession;
+            const remaining = Math.max(0, maxPax - bookedPax);
+
+            if (paxInput) paxInput.max = remaining;
+
+            if (capacityMsg) {
+                capacityMsg.classList.remove('hidden');
+                if (remaining === 0) {
+                    capacityMsg.className = "text-xs font-bold text-red-600 bg-red-50 p-2 rounded border border-red-200 mt-1";
+                    capacityMsg.innerText = "❌ Selected session is FULLY BOOKED for this date (Max 6 pax reached).";
+                } else {
+                    capacityMsg.className = "text-xs font-semibold text-emerald-700 bg-emerald-50 p-2 rounded border border-emerald-200 mt-1";
+                    capacityMsg.innerText = `✅ ${remaining} of ${maxPax} spots remaining for this session.`;
+                }
+            }
+        }
+
+        function handleBookingSubmit(e) {
+            e.preventDefault();
+            const actId = parseInt(document.getElementById('modal-activity-id').value);
+            const act = RAW_ACTIVITIES.find(a => a.id === actId);
+            const bookDate = document.getElementById('book-date').value;
+            const reqPax = parseInt(document.getElementById('book-pax').value);
+
+            let selectedSession = null;
+            let sessionId = null;
+
+            if (act.hasSessions) {
+                const sessionSelect = document.getElementById('book-session');
+                sessionId = sessionSelect ? sessionSelect.value : null;
+                selectedSession = act.sessions ? act.sessions.find(s => s.id === sessionId) : null;
+
+                const currentBookedPax = getBookedPax(actId, bookDate, sessionId);
+                if (currentBookedPax + reqPax > act.maxPaxPerSession) {
+                    alert(`Sorry, this session only has ${act.maxPaxPerSession - currentBookedPax} spots remaining.`);
+                    return;
+                }
+            }
+
+            const newBooking = {
+                id: 'BK-' + Date.now().toString().slice(-6),
+                activityId: actId,
+                activityName: act.activity,
+                sessionId: sessionId,
+                sessionLabel: selectedSession ? selectedSession.label : null,
+                date: bookDate,
+                room: document.getElementById('book-room').value.trim(),
+                name: document.getElementById('book-name').value.trim(),
+                pax: reqPax,
+                package: document.getElementById('book-package').value,
+                notes: document.getElementById('book-notes').value.trim(),
+                createdAt: new Date().toISOString()
+            };
+
+            bookings.unshift(newBooking);
+            saveBookings();
+            closeBookingModal();
+            showReceiptModal(newBooking, act);
+            filterActivities();
+
+            document.getElementById('booking-form').reset();
+            document.getElementById('book-date').value = new Date().toISOString().split('T')[0];
+        }
+
+        function showReceiptModal(bk, act) {
+            const receiptBox = document.getElementById('receipt-content');
+            const displayTime = bk.sessionLabel ? bk.sessionLabel : act.time;
+
+            receiptBox.innerHTML = `
+                <div class="flex justify-between border-b pb-1.5 border-sand-200">
+                    <span class="text-gray-500">Booking Ref:</span>
+                    <span class="font-mono font-bold text-emerald-900">${bk.id}</span>
+                </div>
+                <div class="flex justify-between border-b pb-1.5 border-sand-200">
+                    <span class="text-gray-500">Activity:</span>
+                    <span class="font-bold text-gray-800">${bk.activityName}</span>
+                </div>
+                <div class="flex justify-between border-b pb-1.5 border-sand-200">
+                    <span class="text-gray-500">Date & Session:</span>
+                    <span class="font-medium text-gray-800 text-right">${bk.date}<br>${displayTime}</span>
+                </div>
+                <div class="flex justify-between border-b pb-1.5 border-sand-200">
+                    <span class="text-gray-500">Location:</span>
+                    <span class="font-medium text-gray-800">${act.location}</span>
+                </div>
+                <div class="flex justify-between border-b pb-1.5 border-sand-200">
+                    <span class="text-gray-500">Room & Guest:</span>
+                    <span class="font-medium text-gray-800">Room ${bk.room} (${bk.name})</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500">Attending Pax:</span>
+                    <span class="font-bold text-emerald-800 text-sm">${bk.pax} Person(s)</span>
+                </div>
+            `;
+            document.getElementById('receipt-modal').classList.remove('hidden');
+        }
+
+        function closeReceiptModal() {
+            document.getElementById('receipt-modal').classList.add('hidden');
+        }
+
+        function switchTab(tab) {
+            const guestSec = document.getElementById('guest-section');
+            const adminSec = document.getElementById('admin-section');
+            const btnGuest = document.getElementById('btn-guest-view');
+            const btnAdmin = document.getElementById('btn-admin-view');
+
+            if (tab === 'guest') {
+                guestSec.classList.remove('hidden');
+                adminSec.classList.add('hidden');
+                btnGuest.className = "px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2 bg-emerald-800 text-gold-400 border border-gold-500/30";
+                btnAdmin.className = "px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2 bg-emerald-950 text-emerald-300 hover:text-white hover:bg-emerald-800 border border-emerald-700";
+            } else {
+                guestSec.classList.add('hidden');
+                adminSec.classList.remove('hidden');
+                btnAdmin.className = "px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2 bg-emerald-800 text-gold-400 border border-gold-500/30";
+                btnGuest.className = "px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2 bg-emerald-950 text-emerald-300 hover:text-white hover:bg-emerald-800 border border-emerald-700";
+                renderAdminDashboard();
+            }
+        }
+
+        function toggleAdminAuth() {
+            document.getElementById('auth-modal').classList.remove('hidden');
+            document.getElementById('admin-pin').value = '';
+            document.getElementById('pin-error').classList.add('hidden');
+            document.getElementById('admin-pin').focus();
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        function verifyAdminPIN(e) {
+            e.preventDefault();
+            const pin = document.getElementById('admin-pin').value;
+            if (pin === '1234') {
+                closeAuthModal();
+                switchTab('admin');
+            } else {
+                document.getElementById('pin-error').classList.remove('hidden');
+            }
+        }
+
+        function closeBookingModal() {
+            document.getElementById('booking-modal').classList.add('hidden');
+        }
+
+        function renderAdminDashboard() {
+            const dateFilter = document.getElementById('admin-date-filter').value;
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+
+            let todayBookings = bookings.filter(b => b.date === todayStr);
+            let todayPaxTotal = todayBookings.reduce((sum, b) => sum + b.pax, 0);
+
+            let monthPaxTotal = bookings.filter(b => {
+                const bd = new Date(b.date);
+                return bd.getMonth() === currentMonth && bd.getFullYear() === currentYear;
+            }).reduce((sum, b) => sum + b.pax, 0);
+
+            let yearPaxTotal = bookings.filter(b => {
+                const bd = new Date(b.date);
+                return bd.getFullYear() === currentYear;
+            }).reduce((sum, b) => sum + b.pax, 0);
+
+            const counts = {};
+            bookings.forEach(b => {
+                counts[b.activityName] = (counts[b.activityName] || 0) + b.pax;
+            });
+            let popularName = '-';
+            let maxPax = 0;
+            for (let name in counts) {
+                if (counts[name] > maxPax) {
+                    maxPax = counts[name];
+                    popularName = name;
+                }
+            }
+
+            document.getElementById('stat-today').innerText = todayBookings.length;
+            document.getElementById('stat-today-pax').innerText = `${todayPaxTotal} total guests`;
+            document.getElementById('stat-month-pax').innerText = `${monthPaxTotal} Pax`;
+            document.getElementById('stat-year-pax').innerText = `${yearPaxTotal} Pax`;
+            document.getElementById('stat-popular').innerText = popularName;
+            document.getElementById('stat-popular-count').innerText = `${maxPax} total pax`;
+
+            let filteredTableBookings = bookings.filter(b => {
+                if (dateFilter === 'TODAY') return b.date === todayStr;
+                if (dateFilter === 'MONTH') {
+                    const bd = new Date(b.date);
+                    return bd.getMonth() === currentMonth && bd.getFullYear() === currentYear;
+                }
+                if (dateFilter === 'YEAR') {
+                    const bd = new Date(b.date);
+                    return bd.getFullYear() === currentYear;
+                }
+                return true;
+            });
+
+            const tbody = document.getElementById('bookings-table-body');
+            const noMsg = document.getElementById('no-bookings-msg');
+
+            if (filteredTableBookings.length === 0) {
+                tbody.innerHTML = '';
+                noMsg.classList.remove('hidden');
+            } else {
+                noMsg.classList.add('hidden');
+                tbody.innerHTML = filteredTableBookings.map(bk => `
+                    <tr class="hover:bg-sand-50 transition">
+                        <td class="p-4 whitespace-nowrap font-medium text-gray-700">${bk.date}</td>
+                        <td class="p-4">
+                            <div class="font-bold text-gray-900">${bk.name}</div>
+                            <div class="text-xs text-gray-500">${bk.package}</div>
+                        </td>
+                        <td class="p-4 font-semibold text-emerald-800">Rm ${bk.room}</td>
+                        <td class="p-4">
+                            <span class="font-semibold text-gray-800">${bk.activityName}</span>
+                            ${bk.sessionLabel ? `<div class="text-[11px] text-emerald-700 font-medium">${bk.sessionLabel}</div>` : ''}
+                        </td>
+                        <td class="p-4 text-center font-bold text-gray-800">${bk.pax}</td>
+                        <td class="p-4">
+                            <span class="px-2.5 py-1 text-[11px] font-semibold bg-emerald-100 text-emerald-800 rounded-full">Confirmed</span>
+                        </td>
+                        <td class="p-4 text-center">
+                            <button onclick="deleteBooking('${bk.id}')" class="text-red-500 hover:text-red-700 text-xs px-2 py-1 rounded hover:bg-red-50" title="Cancel Booking">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            const actPaxMap = {};
+            RAW_ACTIVITIES.forEach(a => actPaxMap[a.activity] = 0);
+            bookings.forEach(b => {
+                actPaxMap[b.activityName] = (actPaxMap[b.activityName] || 0) + b.pax;
+            });
+
+            const totalAllPax = Object.values(actPaxMap).reduce((a, b) => a + b, 0) || 1;
+            const breakdownContainer = document.getElementById('activity-breakdown-list');
+
+            breakdownContainer.innerHTML = Object.entries(actPaxMap)
+                .sort((a, b) => b[1] - a[1])
+                .map(([name, pax]) => {
+                    const pct = Math.round((pax / totalAllPax) * 100);
+                    return `
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs font-medium">
+                                <span class="text-gray-700 truncate max-w-[170px]">${name}</span>
+                                <span class="text-emerald-800 font-bold">${pax} pax (${pct}%)</span>
+                            </div>
+                            <div class="w-full bg-sand-200 h-2 rounded-full overflow-hidden">
+                                <div class="bg-emerald-700 h-full rounded-full" style="width: ${pct}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            updateMonthlyChart(currentYear);
+        }
+
+        function updateMonthlyChart(year) {
+            const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const monthlyPax = new Array(12).fill(0);
+
+            bookings.forEach(b => {
+                const bd = new Date(b.date);
+                if (bd.getFullYear() === year) {
+                    monthlyPax[bd.getMonth()] += b.pax;
+                }
+            });
+
+            const ctx = document.getElementById('monthlyChart').getContext('2d');
+            
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: monthLabels,
+                    datasets: [{
+                        label: 'Guest Attendance (Pax)',
+                        data: monthlyPax,
+                        backgroundColor: 'rgba(5, 150, 105, 0.85)',
+                        borderColor: '#047857',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0 }
+                        }
+                    }
+                }
+            });
+        }
+
+        function deleteBooking(id) {
+            bookings = bookings.filter(b => b.id !== id);
+            saveBookings();
+            renderAdminDashboard();
+        }
+
+        function exportBookingsCSV() {
+            if (bookings.length === 0) {
+                alert('No booking data to export.');
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,ID,Date,Room,Guest Name,Pax,Activity,Package,Notes\n";
+            bookings.forEach(b => {
+                csvContent += `"${b.id}","${b.date}","${b.room}","${b.name}",${b.pax},"${b.activityName}","${b.package}","${b.notes}"\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `BaliTropic_Activity_Bookings_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function openQRModal() {
+            const currentUrl = window.location.href;
+            document.getElementById('qr-url-input').value = currentUrl;
+            document.getElementById('qr-modal').classList.remove('hidden');
+            generateQRCode();
+        }
+
+        function closeQRModal() {
+            document.getElementById('qr-modal').classList.add('hidden');
+        }
+
+        function generateQRCode() {
+            const url = document.getElementById('qr-url-input').value.trim() || window.location.href;
+            const qrBox = document.getElementById('qrcode-box');
+            qrBox.innerHTML = '';
+
+            new QRCode(qrBox, {
+                text: url,
+                width: 160,
+                height: 160,
+                colorDark : "#022c22",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+    </script>
+</body>
+</html>
